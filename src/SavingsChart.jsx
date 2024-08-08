@@ -5,7 +5,9 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const SavingsChart = ({ data }) => {
+  const [isHovered, setIsHovered] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
+
 
   const pieData = {
     labels: data.map((item) => item.label),
@@ -19,12 +21,7 @@ const SavingsChart = ({ data }) => {
         hoverBorderColor: "white",
         hoverBorderWidth: 2,
         borderRadius: 6,
-        offset: (context) => {
-          if (context.dataIndex === activeIndex) {
-            return 20; // Adjust this value to control how much the segment pops out
-          }
-          return 0;
-        },
+        hoverOffset: 20,
       },
     ],
   };
@@ -38,9 +35,10 @@ const SavingsChart = ({ data }) => {
             size: 14,
             family: "calibri",
           },
-          padding: 20,
-          boxWidth: 20,
-          color: "#0f224b",
+          padding: 10,
+          boxWidth: 7,
+          boxHeight: 12,
+          color: "#040404",
         },
       },
       tooltip: {
@@ -50,8 +48,10 @@ const SavingsChart = ({ data }) => {
         },
         titleColor: "#000000",
         bodyColor: "#000000",
-        borderColor: "#0f224b",
-        borderWidth: 1,
+        borderColor: "#ffffff",
+        borderWidth: 2.5,
+        boxShadowColor: "10px 10px 10px red",
+        borderRadius: 6,
         titleFont: {
           family: "calibri",
           size: 16,
@@ -63,20 +63,34 @@ const SavingsChart = ({ data }) => {
         },
         callbacks: {
           label: function (tooltipItem) {
-            return tooltipItem.label + ": ₪" + tooltipItem.raw.toLocaleString();
+            return `₪${tooltipItem.raw.toLocaleString()}`;
           },
         },
         padding: 10,
       },
     },
     responsive: true,
-    cutout: "70%",
-    maintainAspectRatio: false,
-    onClick: (event, elements) => {
+    cutout: "75%",
+    onHover: (event, elements) => {
       if (elements.length > 0) {
+        setIsHovered(true);
         const { index } = elements[0];
-        setActiveIndex(index === activeIndex ? null : index);
+        setActiveIndex(index);
+      } else {
+        setIsHovered(false);
+        setActiveIndex(null);
       }
+    },
+    maintainAspectRatio: false,
+    animation: {
+      duration: 250, // Disable animation
+    },
+    transitions: {
+      active: {
+        animation: {
+          duration: 250, // Disable animation when active (hovering)
+        },
+      },
     },
   };
 
@@ -86,7 +100,7 @@ const SavingsChart = ({ data }) => {
         background: "white",
         boxSizing: "border-box",
         width: "300px",
-        height: "310px",
+        height: "320px",
         padding: "0 0",
       }}
     >
@@ -98,7 +112,7 @@ const SavingsChart = ({ data }) => {
           border: '0.5px solid black'
         }}
       >
-        <Doughnut data={pieData} options={options} />
+        <Doughnut data={pieData} options={options}/>
       </div>
     </div>
   );
