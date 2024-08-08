@@ -4,12 +4,11 @@ import SavingsChart from './SavingsChart.jsx'
 function App() {
   const chartPieData = [
     {
-      label: 'קרן פנסיה',
-      data: 501365,
-      backgroundColor: 'green',
-      // backgroundColor: '#32CD32',
-      hoverBackgroundColor: '#3CB371',
-      tooltipColor: '#d4f0d4',
+      label: 'גמל להשקעה',
+      data: 300000,
+      backgroundColor: '#4682B4',
+      hoverBackgroundColor: '#6495ED',
+      tooltipColor: '#d0e7f1',
     },
     {
       label: 'קופת גמל',
@@ -19,18 +18,11 @@ function App() {
       tooltipColor: '#d2d2f2',
     },
     {
-      label: 'גמל להשקעה',
-      data: 300000,
-      backgroundColor: '#4682B4',
-      hoverBackgroundColor: '#6495ED',
-      tooltipColor: '#d0e7f1',
-    },
-    {
-      label: 'קרן השתלמות',
-      data: 200000,
-      backgroundColor: '#87CEEB',
-      hoverBackgroundColor: '#87CEFA',
-      tooltipColor: '#d2e3ef',
+      label: 'קרן פנסיה',
+      data: 501365,
+      backgroundColor: '#32CD32',
+      hoverBackgroundColor: '#3CB371',
+      tooltipColor: '#d4f0d4',
     },
     {
       label: 'ביטוח מנהלים',
@@ -38,6 +30,13 @@ function App() {
       backgroundColor: '#FFD700',
       hoverBackgroundColor: '#FFD700',
       tooltipColor: '#f1f1d0',
+    },
+    {
+      label: 'קרן השתלמות',
+      data: 200000,
+      backgroundColor: '#87CEEB',
+      hoverBackgroundColor: '#87CEFA',
+      tooltipColor: '#d2e3ef',
     },
   ]
 

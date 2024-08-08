@@ -88,14 +88,15 @@ const SavingsChart = ({ data, children }) => {
     },
     maintainAspectRatio: false,
     animation: {
-      duration: 250, // Disable animation
+      duration: 700, // Disable animation,
     },
     transitions: {
-      active: {
+      hover: {
         animation: {
-          duration: 250, // Disable animation when active (hovering)
+          duration: 0, // Disable animation when hovering
         },
       },
+
     },
   };
 
