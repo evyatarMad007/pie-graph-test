@@ -55,6 +55,7 @@ const SavingsChart = ({ data, children }) => {
         borderWidth: 2.5,
         boxShadowColor: "10px 10px 10px red",
         borderRadius: 6,
+        padding: 10,
         titleFont: {
           family: "calibri",
           size: 16,
@@ -69,8 +70,8 @@ const SavingsChart = ({ data, children }) => {
             return `₪${tooltipItem.raw.toLocaleString()}`;
           },
         },
-        padding: 10,
       },
+
     },
     
     responsive: true,
