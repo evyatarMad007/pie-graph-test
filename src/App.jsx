@@ -43,7 +43,12 @@ function App() {
 
   return (
       <div>
-        <SavingsChart data={chartPieData}/>
+        <SavingsChart data={chartPieData}>
+        <span style={{fontWeight: 500, fontSize: '16px', lineHeight: '28.2px', fontFamily: 'calibri', color:"#003C7F"}}>
+          ?כמה חסכתי עד היום
+        </span>
+        <span style={{fontWeight: 700, fontSize: '24px', lineHeight: '28.2px', fontFamily: 'calibri', color: "#003C7F"}}>₪1,657,835</span>
+        </SavingsChart>
       </div>
   )
 }

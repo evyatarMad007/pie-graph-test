@@ -4,10 +4,12 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const SavingsChart = ({ data }) => {
+
+
+
+const SavingsChart = ({ data, children }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
-
 
   const pieData = {
     labels: data.map((item) => item.label),
@@ -32,13 +34,14 @@ const SavingsChart = ({ data }) => {
         position: "bottom",
         labels: {
           font: {
-            size: 14,
+            size: 16,
             family: "calibri",
+            weight: 300,
           },
-          padding: 10,
+          padding: 15,
           boxWidth: 7,
           boxHeight: 12,
-          color: "#040404",
+          color:"#003C7F",
         },
       },
       tooltip: {
@@ -69,6 +72,7 @@ const SavingsChart = ({ data }) => {
         padding: 10,
       },
     },
+    
     responsive: true,
     cutout: "75%",
     onHover: (event, elements) => {
@@ -99,11 +103,35 @@ const SavingsChart = ({ data }) => {
       style={{
         background: "white",
         boxSizing: "border-box",
+        position: "relative",
         width: "300px",
         height: "320px",
+        overflow: "hidden",
         padding: "0 0",
       }}
     >
+     <div
+        style={{
+          position: "absolute",
+          top: "32px",
+          left: '1px',
+          right: 0,
+          width: "184px",
+          height: "184px",
+          borderRadius: "50%",
+          margin: "auto",
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 0,
+          background: 'transparent',
+          userSelect: "none",
+          pointerEvents: "none", // This makes sure that the text is not interfering with mouse events
+        }}
+      >
+        {children}
+      </div>
       <div
         style={{
           position: "relative",
