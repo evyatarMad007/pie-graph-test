@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const SavingsChart = ({ data }) => {
+  const [activeIndex, setActiveIndex] = useState(null);
+
   const pieData = {
     labels: data.map((item) => item.label),
     datasets: [
@@ -15,9 +17,14 @@ const SavingsChart = ({ data }) => {
         borderWidth: 3,
         borderColor: "white",
         hoverBorderColor: "white",
-        // hoverBorderWidth: 0, // need to custom here
-        borderRadius: 6, // need to custom here
-        
+        hoverBorderWidth: 2,
+        borderRadius: 6,
+        offset: (context) => {
+          if (context.dataIndex === activeIndex) {
+            return 20; // Adjust this value to control how much the segment pops out
+          }
+          return 0;
+        },
       },
     ],
   };
@@ -37,11 +44,14 @@ const SavingsChart = ({ data }) => {
         },
       },
       tooltip: {
-        backgroundColor: "#30e633", // Tooltip background color
-        titleColor: "#000000", // Tooltip title color
-        bodyColor: "#000000", // Tooltip body color
-        borderColor: "#0f224b", // Tooltip border color
-        borderWidth: 1, // Tooltip border width
+        backgroundColor: (context) => {
+          const selectedData = data.find((item) => item.label === context.tooltip.title[0]);
+          return selectedData.tooltipColor;
+        },
+        titleColor: "#000000",
+        bodyColor: "#000000",
+        borderColor: "#0f224b",
+        borderWidth: 1,
         titleFont: {
           family: "calibri",
           size: 16,
@@ -60,8 +70,14 @@ const SavingsChart = ({ data }) => {
       },
     },
     responsive: true,
-    cutout: "70%", // To create the donut hole
+    cutout: "70%",
     maintainAspectRatio: false,
+    onClick: (event, elements) => {
+      if (elements.length > 0) {
+        const { index } = elements[0];
+        setActiveIndex(index === activeIndex ? null : index);
+      }
+    },
   };
 
   return (

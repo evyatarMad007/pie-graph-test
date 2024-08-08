@@ -6,7 +6,8 @@ function App() {
     {
       label: 'קרן פנסיה',
       data: 501365,
-      backgroundColor: '#32CD32',
+      backgroundColor: 'green',
+      // backgroundColor: '#32CD32',
       hoverBackgroundColor: '#3CB371',
       tooltipColor: '#a1f5a2',
     },
