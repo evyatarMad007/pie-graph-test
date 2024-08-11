@@ -24,7 +24,7 @@ const SavingsChart = ({ data, title }) => {
         hoverBorderColor: "white",
         hoverBorderWidth: 2,
         borderRadius: 6,
-        hoverOffset: 20,
+        hoverOffset: 40,
       },
     ],
   };
@@ -41,9 +41,10 @@ const SavingsChart = ({ data, title }) => {
           },
           padding: 15,
           boxWidth: 7,
-          boxHeight: 12,
+          boxHeight: 13,
           color:"#003C7F",
         },
+        onClick: () => {},
       },
       tooltip: {
         backgroundColor: (context) => {
@@ -72,7 +73,6 @@ const SavingsChart = ({ data, title }) => {
           },
         },
       },
-
     },
     
     responsive: true,
