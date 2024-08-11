@@ -1,18 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+const formatNumberWithCommas = (number) => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 
-
-
-const SavingsChart = ({ data, children }) => {
+const SavingsChart = ({ data, title }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
+  const countData = data.reduce((acc, item) => acc + item.data, 0);
+
 
   const pieData = {
-    labels: data.map((item) => item.label),
+    labels: data.map((item) => item.label),      
     datasets: [
       {
         data: data.map((item) => item.data),
@@ -115,11 +116,11 @@ const SavingsChart = ({ data, children }) => {
      <div
         style={{
           position: "absolute",
-          top: "32px",
-          left: '1px',
+          top: "30px",
+          left: '2.5px',
           right: 0,
-          width: "184px",
-          height: "184px",
+          width: "173px",
+          height: "173px",
           borderRadius: "50%",
           margin: "auto",
           display: 'flex',
@@ -132,7 +133,10 @@ const SavingsChart = ({ data, children }) => {
           pointerEvents: "none", // This makes sure that the text is not interfering with mouse events
         }}
       >
-        {children}
+        <span style={{fontWeight: 500, fontSize: '16px', lineHeight: '28.2px', fontFamily: 'calibri', color:"#003C7F"}}>
+          {title}
+        </span>
+        <span style={{fontWeight: 700, fontSize: '24px', lineHeight: '28.2px', fontFamily: 'calibri', color: "#003C7F"}}>₪{formatNumberWithCommas(countData)}</span>
       </div>
       <div
         style={{
