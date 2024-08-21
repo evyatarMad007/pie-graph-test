@@ -1,6 +1,6 @@
 {
   "name": "emd-pie-chart",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "module",
   "main": "dist/my-component-library.umd.js",
   "module": "dist/my-component-library.es.js",
