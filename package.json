@@ -1,15 +1,19 @@
 {
-  "name": "pie-chart",
-  "private": true,
-  "version": "0.0.0",
+  "name": "emd-pie-chart",
+  "version": "1.0.5",
   "type": "module",
+  "main": "dist/my-component-library.umd.js",
+  "module": "dist/my-component-library.es.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest",
-    "coverage": "vitest --coverage"
+    "coverage": "vitest --coverage",
+    "git": "echo 'GITHUB PUBLISH' && git add . && git commit -m 'update' && git push",
+    "pub:npm": "echo 'publish Npm -------------------------------------' && npm publish --access public",
+    "pub": "npm run build && npm run pub:npm && npm run git"
   },
   "dependencies": {
     "chart.js": "^4.4.3",
