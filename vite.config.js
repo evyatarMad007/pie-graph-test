@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   build: {
     lib: {
-      entry: 'src/index.js',
+      entry: 'src/index.jsx', // Use .jsx as the entry point
       name: 'MyComponentLibrary',
       fileName: (format) => `my-component-library.${format}.js`,
     },
@@ -16,7 +16,11 @@ export default defineConfig({
           react: 'React',
           'react-dom': 'ReactDOM',
         },
+        assetFileNames: `my-component-library.[ext]`, // Ensures correct file naming for non-JS assets
       },
     },
+  },
+  resolve: {
+    extensions: ['.js', '.jsx'], // Ensure Vite resolves .jsx files
   },
 });
