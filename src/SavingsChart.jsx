@@ -4,25 +4,26 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const formatNumberWithCommas = (number) => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+const formatNumberWithCommas = (number) =>
+  number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 const SavingsChart = ({ data, title }) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const countData = data.reduce((acc, item) => acc + item.data, 0);
 
   const pieData = {
-    labels: data.map((item) => item.label),      
+    labels: data.map((item) => item.label),
     datasets: [
       {
         data: data.map((item) => item.data),
         backgroundColor: data.map((item) => item.backgroundColor),
         hoverBackgroundColor: data.map((item) => item.hoverBackgroundColor),
-        borderWidth: 3,
+        borderWidth: 4,
         borderColor: "white",
         hoverBorderColor: "white",
-        hoverBorderWidth: 2,
-        borderRadius: 6,
-        hoverOffset: 20,
+        hoverBorderWidth: 0,
+        borderRadius: 7,
+        hoverOffset: 18.5,
       },
     ],
   };
@@ -34,7 +35,9 @@ const SavingsChart = ({ data, title }) => {
       },
       tooltip: {
         backgroundColor: (context) => {
-          const selectedData = data.find((item) => item.label === context.tooltip.title[0]);
+          const selectedData = data.find(
+            (item) => item.label === context.tooltip.title[0]
+          );
           return selectedData.tooltipColor;
         },
         titleColor: "#000000",
@@ -60,7 +63,7 @@ const SavingsChart = ({ data, title }) => {
       },
     },
     responsive: true,
-    cutout: "75%",
+    cutout: "78%",
     onHover: (event, elements) => {
       if (elements.length > 0) {
         const { index } = elements[0];
@@ -76,31 +79,47 @@ const SavingsChart = ({ data, title }) => {
   };
 
   const CustomLegend = () => (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexWrap: "wrap",
+        gap: "12px",
+        marginTop: "20px",
+      }}
+    >
       {data.map((item, index) => (
-        <div 
-          key={index} 
-          style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            marginBottom: '5px',
-            fontWeight: hoveredIndex === index ? 'bold' : 'normal',
-            transition: 'font-weight 0.3s ease'
+        <div
+          key={index}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "row-reverse",
+            gap: "7px",
+            marginBottom: "5px",
+            fontWeight: hoveredIndex === index ? "bolder" : "normal",
+            transition: "font-weight 1s ease",
           }}
         >
-          <div 
-            style={{ 
-              width: '7px', 
-              height: '12px', 
-              backgroundColor: item.backgroundColor, 
-              marginRight: '5px' 
-            }} 
+          <div
+            style={{
+              width: "4.5px",
+              borderRadius: hoveredIndex === index ? "1.3px" : "5px",
+              height: "13px",
+              transform: hoveredIndex === index ? "scale(1,1.7)" : "scale(1,1)",
+              backgroundColor: item.backgroundColor,
+              marginRight: "5px",
+            }}
           />
-          <span style={{ 
-            fontSize: '16px', 
-            fontFamily: 'calibri', 
-            color: "#003C7F"
-          }}>
+          <span
+            style={{
+              fontSize: "16px",
+              lineHeight: "24px",
+              fontFamily: "mfw_protocolharel, Arial, Helvetica, sans-serif",
+              color: "#003C7F",
+            }}
+          >
             {item.label}
           </span>
         </div>
@@ -120,40 +139,60 @@ const SavingsChart = ({ data, title }) => {
         padding: "0 0",
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          top: "30px",
-          left: '2.5px',
-          right: 0,
-          width: "173px",
-          height: "173px",
-          borderRadius: "50%",
-          margin: "auto",
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 0,
-          background: 'transparent',
-          userSelect: "none",
-          pointerEvents: "none",
-        }}
-      >
-        <span style={{fontWeight: 500, fontSize: '16px', lineHeight: '28.2px', fontFamily: 'calibri', color:"#003C7F"}}>
-          {title}
-        </span>
-        <span style={{fontWeight: 700, fontSize: '24px', lineHeight: '28.2px', fontFamily: 'calibri', color: "#003C7F"}}>₪{formatNumberWithCommas(countData)}</span>
-      </div>
+      {title && (
+        <div
+          style={{
+            position: "absolute",
+            top: "30px",
+            left: "2.5px",
+            right: 0,
+            width: "173px",
+            height: "173px",
+            borderRadius: "50%",
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 0,
+            background: "transparent",
+            userSelect: "none",
+            pointerEvents: "none",
+          }}
+        >
+          <span
+            style={{
+              fontWeight: 500,
+              fontSize: "16px",
+              lineHeight: "28.2px",
+              fontFamily: "calibri",
+              color: "#003C7F",
+            }}
+          >
+            {title}
+          </span>
+          <span
+            style={{
+              fontWeight: 700,
+              fontSize: "24px",
+              lineHeight: "28.2px",
+              fontFamily: "calibri",
+              color: "#003C7F",
+            }}
+          >
+            ₪{formatNumberWithCommas(countData)}
+          </span>
+        </div>
+      )}
       <div
         style={{
           position: "relative",
           width: "100%",
           height: "75%",
-          border: '0.5px solid black'
+          border: "0.5px solid black",
         }}
       >
-        <Doughnut data={pieData} options={options}/>
+        <Doughnut data={pieData} options={options} />
       </div>
       <CustomLegend />
     </div>
