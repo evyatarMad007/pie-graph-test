@@ -11,7 +11,7 @@ const SavingsChart = ({ data, title }) => {
   const DonutHeight = 390;
   const DonutWidth = 300;
   const [hoveredIndex, setHoveredIndex] = useState(0);
-  const [hoveredIndexForTooltip, setHoveredIndexForTooltip] = useState(null);
+  const [hoveredIndexForTooltip, setHoveredIndexForTooltip] = useState(0);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, xInner: 0, y: 0, yInner: 0 });
   const countData = data.reduce((acc, item) => acc + item.data, 0);
 
