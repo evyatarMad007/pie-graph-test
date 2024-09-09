@@ -8,7 +8,7 @@ const formatNumberWithCommas = (number) =>
   number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 const SavingsChart = ({ data, title }) => {
-  const DonutHeight = 370;
+  const DonutHeight = 390;
   const DonutWidth = 300;
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, xInner: 0, y: 0, yInner: 0 });
@@ -28,7 +28,7 @@ const SavingsChart = ({ data, title }) => {
         borderRadius: 7,
         hoverOffset: 18.5,
         animation: {
-          duration: 10,
+          duration: 20,
         },
       },
     ],
