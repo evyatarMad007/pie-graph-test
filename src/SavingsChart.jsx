@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
@@ -8,7 +8,10 @@ const formatNumberWithCommas = (number) =>
   number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 const SavingsChart = ({ data, title }) => {
+  const DonutHeight = 370;
+  const DonutWidth = 300;
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, xInner: 0, y: 0, yInner: 0 });
   const countData = data.reduce((acc, item) => acc + item.data, 0);
 
   const pieData = {
@@ -24,6 +27,9 @@ const SavingsChart = ({ data, title }) => {
         hoverBorderWidth: 0,
         borderRadius: 7,
         hoverOffset: 18.5,
+        animation: {
+          duration: 10,
+        },
       },
     ],
   };
@@ -31,50 +37,28 @@ const SavingsChart = ({ data, title }) => {
   const options = {
     plugins: {
       legend: {
-        display: false, // Hide default legend
+        display: false,
       },
       tooltip: {
-        backgroundColor: (context) => {
-          const selectedData = data.find(
-            (item) => item.label === context.tooltip.title[0]
-          );
-          return selectedData.tooltipColor;
-        },
-        titleColor: "#000000",
-        bodyColor: "#000000",
-        borderColor: "#ffffff",
-        borderWidth: 2.5,
-        borderRadius: 6,
-        padding: 10,
-        titleFont: {
-          family: "calibri",
-          size: 16,
-          weight: "bold",
-        },
-        bodyFont: {
-          family: "calibri",
-          size: 14,
-        },
-        callbacks: {
-          label: function (tooltipItem) {
-            return `₪${tooltipItem.raw.toLocaleString()}`;
-          },
-        },
+        enabled: false,
       },
     },
     responsive: true,
     cutout: "78%",
-    onHover: (event, elements) => {
+    onHover: (event, elements, chart) => {
       if (elements.length > 0) {
         const { index } = elements[0];
         setHoveredIndex(index);
+        const canvasPosition = chart.canvas.getBoundingClientRect();
+        setTooltipPos({
+          x: canvasPosition.left + event.x,
+          y: canvasPosition.top + event.y,
+          xInner: event.x,
+          yInner: event.y,
+        });
       } else {
         setHoveredIndex(null);
       }
-    },
-    maintainAspectRatio: false,
-    animation: {
-      duration: 700,
     },
   };
 
@@ -84,6 +68,7 @@ const SavingsChart = ({ data, title }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        flexDirection: "row-reverse",
         flexWrap: "wrap",
         gap: "12px",
         marginTop: "20px",
@@ -127,15 +112,102 @@ const SavingsChart = ({ data, title }) => {
     </div>
   );
 
+  const CustomTooltip = () => {
+    if (hoveredIndex === null) return null;
+    const item = data[hoveredIndex];
+
+    // Determine which corner should be sharp based on tooltip position
+    const chartCenter = { x: DonutWidth / 2, y: DonutHeight / 2 }; // Assuming chart is 300x300
+    const isLeft = tooltipPos.xInner < chartCenter.x;
+    const isTop = tooltipPos.yInner < chartCenter.y;
+    const borderRadius = "10px";
+    const sharpCorner = "0px";
+
+    const translatePosition = () => {
+      const positions = {
+        yWhenTop: -60,
+        yWhenBottom: 15,
+        xWhenLeft: -105,
+        xWhenRight: 15,
+      };
+
+      return {
+        x: isLeft ? positions.xWhenLeft : positions.xWhenRight,
+        y: isTop ? positions.yWhenTop : positions.yWhenBottom,
+      };
+    };
+
+    const getBorderRadius = () => {
+      const positions = {
+        topLeft: `0 ${borderRadius} ${borderRadius} ${borderRadius}`,
+        topRight: `${borderRadius} 0 ${borderRadius} ${borderRadius}`,
+        bottomLeft: `${borderRadius} ${borderRadius} ${borderRadius} 0`,
+        bottomRight: `${borderRadius} ${borderRadius} 0 ${borderRadius}`,
+      };
+
+      if( isLeft && isTop ) return positions.bottomRight;
+      if( !isLeft && isTop ) return positions.bottomLeft;
+      if( isLeft && !isTop ) return positions.topRight;
+      if( !isLeft && !isTop ) return positions.topLeft;
+    };
+
+    const horizontalPosition = translatePosition().x;
+    const verticalPosition = translatePosition().y;
+
+    const tooltipStyle = {
+      position: "fixed",
+      left: `${tooltipPos.x}px`,
+      top: `${tooltipPos.y}px`,
+      transform: `translate(${horizontalPosition}px, ${verticalPosition}px)`,
+      backgroundColor: item.tooltipColor,
+      boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.266), 1px 0 4px rgba(0, 0, 0, 0.085)",
+      zIndex: 1000,
+      borderRadius: getBorderRadius(),
+      border: "3px solid white",
+      textAlign: "center",
+      width: "max-content",
+      minWidth: "75px",
+      height: "43px",
+      maxHeight: "43px",
+      padding: "7px 10px 2px 10px",
+    };
+
+    return (
+      <div style={tooltipStyle}>
+        <div
+          style={{
+            fontFamily: "mfw_protocolharel, Arial, Helvetica, sans-serif",
+            fontSize: "14px",
+            fontWeight: 300,
+            color: "#003c7f",
+            marginBottom: "4px",
+          }}
+        >
+          {item.label}
+        </div>
+        <div
+          style={{
+            fontFamily: "mfw_protocolharel, Arial, Helvetica, sans-serif",
+            fontSize: "14px",
+            fontWeight: "bolder",
+            color: "#003c7f",
+          }}
+        >
+          ₪{formatNumberWithCommas(item.data)}
+        </div>
+      </div>
+    );
+  };
+
+
   return (
     <div
       style={{
         background: "white",
         boxSizing: "border-box",
         position: "relative",
-        width: "300px",
-        height: "370px", // Increased height to accommodate custom legend
-        overflow: "hidden",
+        width: `${DonutWidth}px`,
+        height: `${DonutHeight}px`,
         padding: "0 0",
       }}
     >
@@ -143,11 +215,11 @@ const SavingsChart = ({ data, title }) => {
         <div
           style={{
             position: "absolute",
-            top: "30px",
+            top: "37.5px",
             left: "2.5px",
             right: 0,
-            width: "173px",
-            height: "173px",
+            width: "200px",
+            height: "200px",
             borderRadius: "50%",
             margin: "auto",
             display: "flex",
@@ -189,12 +261,15 @@ const SavingsChart = ({ data, title }) => {
           position: "relative",
           width: "100%",
           height: "75%",
-          border: "0.5px solid black",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <Doughnut data={pieData} options={options} />
       </div>
-      <CustomLegend />
+      <CustomLegend/>
+      <CustomTooltip />
     </div>
   );
 };

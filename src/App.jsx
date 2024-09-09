@@ -4,44 +4,45 @@ import SavingsChart from './SavingsChart.jsx'
 function App() {
   const chartPieData = [
     {
-      label: 'גמל להשקעה',
-      data: 324658,
-      backgroundColor: '#4682B4',
-      hoverBackgroundColor: '#6495ED',
-      tooltipColor: '#d0e7f1',
+      label: 'קרן פנסיה',
+      data: 318695,
+      backgroundColor: '#33b242',
+      hoverBackgroundColor: '#33b242',
+      tooltipColor: '#d7f4db',
     },
     {
       label: 'קופת גמל',
       data: 102502,
-      backgroundColor: '#00008B',
-      hoverBackgroundColor: '#0000CD',
-      tooltipColor: '#d2d2f2',
+      backgroundColor: '#003c7f',
+      hoverBackgroundColor: '#003c7f',
+      tooltipColor: '#c7e1ff',
     },
     {
-      label: 'קרן פנסיה',
-      data: 318695,
-      backgroundColor: '#32CD32',
-      hoverBackgroundColor: '#3CB371',
-      tooltipColor: '#d4f0d4',
-    },
-    {
-      label: 'ביטוח מנהלים',
-      data: 57456,
-      backgroundColor: '#FFD700',
-      hoverBackgroundColor: '#FFD700',
-      tooltipColor: '#f1f1d0',
+      label: 'גמל להשקעה',
+      data: 324658,
+      backgroundColor: '#2d76cb',
+      hoverBackgroundColor: '#2d76cb',
+      tooltipColor: '#e2ecf9',
     },
     {
       label: 'קרן השתלמות',
       data: 178506,
-      backgroundColor: '#87CEEB',
-      hoverBackgroundColor: '#87CEFA',
-      tooltipColor: '#d2e3ef',
+      backgroundColor: '#c7e1ff',
+      hoverBackgroundColor: '#c7e1ff',
+      tooltipColor: '#e2ecf9',
+    },
+    {
+      label: 'ביטוח מנהלים',
+      data: 57456,
+      backgroundColor: '#f9ba20',
+      hoverBackgroundColor: '#f9ba20',
+      tooltipColor: '#fef0cd',
     },
   ]
 
   return (
-      <div>
+      // <div>
+      <div style={{paddingTop: '100px', paddingLeft: '300px'}}>
         <SavingsChart data={chartPieData} title={"?כמה חסכתי עד היום"}/>
       </div>
   )
