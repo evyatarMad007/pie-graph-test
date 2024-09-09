@@ -225,7 +225,7 @@ const SavingsChart = ({ data, title }) => {
         <div
           style={{
             position: "absolute",
-            top: "37.5px",
+            top: "40px",
             left: "2.5px",
             right: 0,
             width: "200px",
