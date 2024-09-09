@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
@@ -13,32 +13,11 @@ const SavingsChart = ({ data, title }) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [hoveredIndexForTooltip, setHoveredIndexForTooltip] = useState(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, xInner: 0, y: 0, yInner: 0 });
-  const countData = data.reduce((acc, item) => acc + item.data, 0);
   const chartRef = useRef(null);
 
-  // const pieData = {
-  //   labels: data.map((item) => item.label),
-  //   datasets: [
-  //     {
-  //       data: data.map((item) => item.data),
-  //       backgroundColor: data.map((item) => item.backgroundColor),
-  //       hoverBackgroundColor: data.map((item) => item.hoverBackgroundColor),
-  //       borderWidth: 4,
-  //       borderColor: "white",
-  //       hoverBorderColor: "white", 
-  //       hoverBorderWidth: 0, 
-  //       borderRadius: 7, 
-  //       hoverOffset: 18.5,
-  //       animation: {
-  //         duration: 20,
-  //       },
-  //     },
-  //   ],
-  // };
+  const countData = useMemo(() => data.reduce((acc, item) => acc + item.data, 0), [data]);
 
-
-
-  const [pieData, setPieData] = useState({
+  const pieData = useMemo(() => ({
     labels: data.map((item) => item.label),
     datasets: [{
       data: data.map((item) => item.data),
@@ -50,24 +29,30 @@ const SavingsChart = ({ data, title }) => {
       hoverBorderWidth: 0,
       borderRadius: 7,
       hoverOffset: 18.5,
-      offset: data.map(() => 18.5),
+      offset: data.map(() => 0),
       animation: {
         duration: 20,
       },
     }]
-  });
+  }), [data]);
+
+  const updatePieDataOffset = useCallback(() => {
+    return {
+      ...pieData,
+      datasets: [{
+        ...pieData.datasets[0],
+        offset: data.map((_, index) => hoveredIndex === index ? 18.5 : 0),
+      }]
+    };
+  }, [pieData, data, hoveredIndex]);
+
+  const [currentPieData, setCurrentPieData] = useState(pieData);
 
   useEffect(() => {
-    setPieData(prevData => ({
-      ...prevData,
-      datasets: [{
-        ...prevData.datasets[0],
-        offset: data.map((item, index) => hoveredIndex === index ? 18.5 : 0),
-      }]
-    }));
-  }, [hoveredIndex, data]);
+    setCurrentPieData(updatePieDataOffset());
+  }, [hoveredIndex, updatePieDataOffset]);
 
-  const options = {
+  const options = useMemo(() => ({
     plugins: {
       legend: {
         display: false,
@@ -105,9 +90,9 @@ const SavingsChart = ({ data, title }) => {
         setHoveredIndexForTooltip(null);
       }
     },
-  };
+  }), []);
 
-  const handleLegendHover = (index) => {
+  const handleLegendHover = useCallback((index) => {
     setHoveredIndex(index);
     setHoveredIndexForTooltip(index);
     
@@ -126,14 +111,14 @@ const SavingsChart = ({ data, title }) => {
         yInner: centerPoint.y,
       });
     }
-  };
+  }, []);
 
-  const handleLegendLeave = () => {
+  const handleLegendLeave = useCallback(() => {
     setHoveredIndex(null);
     setHoveredIndexForTooltip(null);
-  };
+  }, []);
 
-  const CustomLegend = () => (
+  const CustomLegend = useCallback(() => (
     <div
       style={{
         display: "flex",
@@ -184,9 +169,9 @@ const SavingsChart = ({ data, title }) => {
         </div>
       ))}
     </div>
-  );
+  ), [data, hoveredIndex, handleLegendHover, handleLegendLeave]);
 
-  const CustomTooltip = () => {
+  const CustomTooltip = useCallback(() => {
     if (hoveredIndexForTooltip === null) return null;
     const item = data[hoveredIndexForTooltip];
 
@@ -195,7 +180,7 @@ const SavingsChart = ({ data, title }) => {
     const isTop = tooltipPos.yInner < chartCenter.y;
     const borderRadius = "10px";
     const sharpCorner = "0px";
-
+  
     const translatePosition = () => {
       const positions = {
         yWhenTop: -60,
@@ -203,13 +188,13 @@ const SavingsChart = ({ data, title }) => {
         xWhenLeft: -105,
         xWhenRight: 15,
       };
-
+  
       return {
         x: isLeft ? positions.xWhenLeft : positions.xWhenRight,
         y: isTop ? positions.yWhenTop : positions.yWhenBottom,
       };
     };
-
+  
     const getBorderRadius = () => {
       const positions = {
         topLeft: `0 ${borderRadius} ${borderRadius} ${borderRadius}`,
@@ -217,16 +202,16 @@ const SavingsChart = ({ data, title }) => {
         bottomLeft: `${borderRadius} ${borderRadius} ${borderRadius} 0`,
         bottomRight: `${borderRadius} ${borderRadius} 0 ${borderRadius}`,
       };
-
+  
       if( isLeft && isTop ) return positions.bottomRight;
       if( !isLeft && isTop ) return positions.bottomLeft;
       if( isLeft && !isTop ) return positions.topRight;
       if( !isLeft && !isTop ) return positions.topLeft;
     };
-
+  
     const horizontalPosition = translatePosition().x;
     const verticalPosition = translatePosition().y;
-
+  
     const tooltipStyle = {
       position: "fixed",
       left: `${tooltipPos.x}px`,
@@ -244,7 +229,7 @@ const SavingsChart = ({ data, title }) => {
       maxHeight: "43px",
       padding: "7px 10px 2px 10px",
     };
-
+  
     return (
       <div style={tooltipStyle}>
         <div
@@ -270,7 +255,8 @@ const SavingsChart = ({ data, title }) => {
         </div>
       </div>
     );
-  };
+
+  }, [data, hoveredIndexForTooltip, tooltipPos, DonutWidth, DonutHeight]);
 
   return (
     <div
@@ -338,7 +324,7 @@ const SavingsChart = ({ data, title }) => {
           alignItems: "center",
         }}
       >
-        <Doughnut data={pieData} options={options} ref={chartRef} />
+        <Doughnut data={currentPieData} options={options} ref={chartRef} />
       </div>
       <CustomLegend/>
       <CustomTooltip />
