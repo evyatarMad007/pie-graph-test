@@ -180,13 +180,16 @@ const SavingsChart = ({ data, title }) => {
     const sharpCorner = "0px";
   
     const translatePosition = () => {
+      const tooltipWidth = document.getElementById(item.label)?.offsetWidth;
+      const horizontalOffset = tooltipWidth + 3;
+
       const positions = {
         yWhenTop: -60,
         yWhenBottom: 15,
-        xWhenLeft: -105,
+        xWhenLeft: -horizontalOffset,
         xWhenRight: 15,
       };
-  
+
       return {
         x: isLeft ? positions.xWhenLeft : positions.xWhenRight,
         y: isTop ? positions.yWhenTop : positions.yWhenBottom,
@@ -209,7 +212,7 @@ const SavingsChart = ({ data, title }) => {
   
     const horizontalPosition = translatePosition().x;
     const verticalPosition = translatePosition().y;
-  
+
     const tooltipStyle = {
       position: "fixed",
       left: `${tooltipPos.x}px`,
@@ -222,14 +225,15 @@ const SavingsChart = ({ data, title }) => {
       border: "3px solid white",
       textAlign: "center",
       width: "max-content",
-      minWidth: "75px",
       height: "43px",
       maxHeight: "43px",
       padding: "7px 10px 2px 10px",
     };
   
     return (
-      <div style={tooltipStyle}>
+      <div style={tooltipStyle}
+      id={item.label}
+      >
         <div
           style={{
             fontFamily: "mfw_protocolharel, Arial, Helvetica, sans-serif",
@@ -274,7 +278,7 @@ const SavingsChart = ({ data, title }) => {
         boxSizing: "border-box",
         position: "relative",
         width: `${DonutWidth}px`,
-        height: `${DonutHeight}px`,
+        minHeight: `${DonutHeight}px`,
         padding: "0",
       }}
     >

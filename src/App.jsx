@@ -38,6 +38,34 @@ function App() {
       hoverBackgroundColor: '#f9ba20',
       tooltipColor: '#fef0cd',
     },
+    {
+      label: 'חסכון פיננסי',
+      data: 89456,
+      backgroundColor: '#7e20f9',
+      hoverBackgroundColor: '#7e20f9',
+      tooltipColor: '#bfa1e7',
+    },
+    {
+      label: 'ביטוח נסיעות לחו"ל',
+      data: 117589,
+      backgroundColor: '#787878',
+      hoverBackgroundColor: '#787878',
+      tooltipColor: '#dadada',
+    },
+    {
+      label: 'ביטוח בריאות',
+      data: 210548,
+      backgroundColor: '#c8ff00',
+      hoverBackgroundColor: '#c8ff00',
+      tooltipColor: '#e6eec8',
+    },
+    {
+      label: 'ביטוח רכב',
+      data: 96456,
+      backgroundColor: '#f92020',
+      hoverBackgroundColor: '#f92020',
+      tooltipColor: '#facbcb',
+    },
   ]
 
   return (
