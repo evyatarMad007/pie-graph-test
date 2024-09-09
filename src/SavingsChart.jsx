@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
@@ -7,10 +7,8 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const formatNumberWithCommas = (number) => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 
 const SavingsChart = ({ data, title }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
   const countData = data.reduce((acc, item) => acc + item.data, 0);
-
 
   const pieData = {
     labels: data.map((item) => item.label),      
@@ -32,18 +30,7 @@ const SavingsChart = ({ data, title }) => {
   const options = {
     plugins: {
       legend: {
-        position: "bottom",
-        labels: {
-          font: {
-            size: 16,
-            family: "calibri",
-            weight: 300,
-          },
-          padding: 15,
-          boxWidth: 7,
-          boxHeight: 12,
-          color:"#003C7F",
-        },
+        display: false, // Hide default legend
       },
       tooltip: {
         backgroundColor: (context) => {
@@ -54,7 +41,6 @@ const SavingsChart = ({ data, title }) => {
         bodyColor: "#000000",
         borderColor: "#ffffff",
         borderWidth: 2.5,
-        boxShadowColor: "10px 10px 10px red",
         borderRadius: 6,
         padding: 10,
         titleFont: {
@@ -72,34 +58,55 @@ const SavingsChart = ({ data, title }) => {
           },
         },
       },
-
     },
-    
     responsive: true,
     cutout: "75%",
     onHover: (event, elements) => {
       if (elements.length > 0) {
-        setIsHovered(true);
         const { index } = elements[0];
-        setActiveIndex(index);
+        setHoveredIndex(index);
       } else {
-        setIsHovered(false);
-        setActiveIndex(null);
+        setHoveredIndex(null);
       }
     },
     maintainAspectRatio: false,
     animation: {
-      duration: 700, // Disable animation,
-    },
-    transitions: {
-      hover: {
-        animation: {
-          duration: 0, // Disable animation when hovering
-        },
-      },
-
+      duration: 700,
     },
   };
+
+  const CustomLegend = () => (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
+      {data.map((item, index) => (
+        <div 
+          key={index} 
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            marginBottom: '5px',
+            fontWeight: hoveredIndex === index ? 'bold' : 'normal',
+            transition: 'font-weight 0.3s ease'
+          }}
+        >
+          <div 
+            style={{ 
+              width: '7px', 
+              height: '12px', 
+              backgroundColor: item.backgroundColor, 
+              marginRight: '5px' 
+            }} 
+          />
+          <span style={{ 
+            fontSize: '16px', 
+            fontFamily: 'calibri', 
+            color: "#003C7F"
+          }}>
+            {item.label}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div
@@ -108,12 +115,12 @@ const SavingsChart = ({ data, title }) => {
         boxSizing: "border-box",
         position: "relative",
         width: "300px",
-        height: "320px",
+        height: "370px", // Increased height to accommodate custom legend
         overflow: "hidden",
         padding: "0 0",
       }}
     >
-     <div
+      <div
         style={{
           position: "absolute",
           top: "30px",
@@ -130,7 +137,7 @@ const SavingsChart = ({ data, title }) => {
           zIndex: 0,
           background: 'transparent',
           userSelect: "none",
-          pointerEvents: "none", // This makes sure that the text is not interfering with mouse events
+          pointerEvents: "none",
         }}
       >
         <span style={{fontWeight: 500, fontSize: '16px', lineHeight: '28.2px', fontFamily: 'calibri', color:"#003C7F"}}>
@@ -142,12 +149,13 @@ const SavingsChart = ({ data, title }) => {
         style={{
           position: "relative",
           width: "100%",
-          height: "95%",
+          height: "75%",
           border: '0.5px solid black'
         }}
       >
         <Doughnut data={pieData} options={options}/>
       </div>
+      <CustomLegend />
     </div>
   );
 };
