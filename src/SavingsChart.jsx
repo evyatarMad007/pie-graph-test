@@ -23,16 +23,13 @@ const SavingsChart = ({ data, title }) => {
       data: data.map((item) => item.data),
       backgroundColor: data.map((item) => item.backgroundColor),
       hoverBackgroundColor: data.map((item) => item.hoverBackgroundColor),
-      borderWidth: 4,
       borderColor: "white",
       hoverBorderColor: "white",
-      hoverBorderWidth: 0,
       borderRadius: 7,
+      borderWidth: 4,
+      hoverBorderWidth: 0,
       hoverOffset: 18.5,
       offset: data.map(() => 0),
-      animation: {
-        duration: 20,
-      },
     }]
   }), [data]);
 
@@ -42,6 +39,7 @@ const SavingsChart = ({ data, title }) => {
       datasets: [{
         ...pieData.datasets[0],
         offset: data.map((_, index) => hoveredIndex === index ? 18.5 : 0),
+        borderWidth: data.map((_, index) => hoveredIndex === index ? 0 : 4),
       }]
     };
   }, [pieData, data, hoveredIndex]);
@@ -253,6 +251,17 @@ const SavingsChart = ({ data, title }) => {
         >
           ₪{formatNumberWithCommas(item.data)}
         </div>
+        <div style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          top: 0,
+          left: 0,
+          borderRadius: getBorderRadius(),
+          border: "0.1px solid rgba(0, 0, 0, 0.035)",
+          backgroundColor: 'transparent',
+          boxSizing: "border-box",
+        }}></div>
       </div>
     );
 
