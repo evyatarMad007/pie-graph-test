@@ -10,7 +10,8 @@ const formatNumberWithCommas = (number) =>
 const SavingsChart = ({ data, title }) => {
   const DonutHeight = 390;
   const DonutWidth = 300;
-  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [hoveredIndex, setHoveredIndex] = useState(0);
+  const [hoveredIndexForTooltip, setHoveredIndexForTooltip] = useState(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, xInner: 0, y: 0, yInner: 0 });
   const countData = data.reduce((acc, item) => acc + item.data, 0);
 
@@ -59,6 +60,7 @@ const SavingsChart = ({ data, title }) => {
       if (elements.length > 0) {
         const { index } = elements[0];
         setHoveredIndex(index);
+        setHoveredIndexForTooltip(index);
         const canvasPosition = chart.canvas.getBoundingClientRect();
         setTooltipPos({
           x: canvasPosition.left + event.x,
@@ -68,6 +70,7 @@ const SavingsChart = ({ data, title }) => {
         });
       } else {
         setHoveredIndex(null);
+        setHoveredIndexForTooltip(null);
       }
     },
   };
@@ -95,6 +98,7 @@ const SavingsChart = ({ data, title }) => {
             marginBottom: "5px",
             fontWeight: hoveredIndex === index ? "bolder" : "normal",
             transition: "font-weight 1s ease",
+            cursor: "pointer",
           }}
         >
           <div
@@ -123,8 +127,8 @@ const SavingsChart = ({ data, title }) => {
   );
 
   const CustomTooltip = () => {
-    if (hoveredIndex === null) return null;
-    const item = data[hoveredIndex];
+    if (hoveredIndexForTooltip === null) return null;
+    const item = data[hoveredIndexForTooltip];
 
     // Determine which corner should be sharp based on tooltip position
     const chartCenter = { x: DonutWidth / 2, y: DonutHeight / 2 }; // Assuming chart is 300x300
