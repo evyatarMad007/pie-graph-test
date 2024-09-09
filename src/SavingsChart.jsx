@@ -14,6 +14,7 @@ const SavingsChart = ({ data, title }) => {
   const [hoveredIndexForTooltip, setHoveredIndexForTooltip] = useState(0);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, xInner: 0, y: 0, yInner: 0 });
   const countData = data.reduce((acc, item) => acc + item.data, 0);
+  const chartRef = useRef(null);
 
   const pieData = {
     labels: data.map((item) => item.label),
@@ -75,6 +76,32 @@ const SavingsChart = ({ data, title }) => {
     },
   };
 
+  const handleLegendHover = (index) => {
+    setHoveredIndex(index);
+    setHoveredIndexForTooltip(index);
+    
+    if (chartRef.current) {
+      const chart = chartRef.current;
+      const canvas = chart.canvas;
+      const rect = canvas.getBoundingClientRect();
+      const datasetMeta = chart.getDatasetMeta(0);
+      const arc = datasetMeta.data[index];
+      const centerPoint = arc.getCenterPoint();
+      
+      setTooltipPos({
+        x: rect.left + centerPoint.x,
+        y: rect.top + centerPoint.y,
+        xInner: centerPoint.x,
+        yInner: centerPoint.y,
+      });
+    }
+  };
+
+  const handleLegendLeave = () => {
+    setHoveredIndex(null);
+    setHoveredIndexForTooltip(null);
+  };
+
   const CustomLegend = () => (
     <div
       style={{
@@ -100,6 +127,8 @@ const SavingsChart = ({ data, title }) => {
             transition: "font-weight 1s ease",
             cursor: "pointer",
           }}
+          onMouseEnter={() => handleLegendHover(index)}
+          onMouseLeave={handleLegendLeave}
         >
           <div
             style={{
@@ -130,8 +159,7 @@ const SavingsChart = ({ data, title }) => {
     if (hoveredIndexForTooltip === null) return null;
     const item = data[hoveredIndexForTooltip];
 
-    // Determine which corner should be sharp based on tooltip position
-    const chartCenter = { x: DonutWidth / 2, y: DonutHeight / 2 }; // Assuming chart is 300x300
+    const chartCenter = { x: DonutWidth / 2, y: DonutHeight / 2 };
     const isLeft = tooltipPos.xInner < chartCenter.x;
     const isTop = tooltipPos.yInner < chartCenter.y;
     const borderRadius = "10px";
@@ -213,7 +241,6 @@ const SavingsChart = ({ data, title }) => {
     );
   };
 
-
   return (
     <div
       style={{
@@ -280,7 +307,7 @@ const SavingsChart = ({ data, title }) => {
           alignItems: "center",
         }}
       >
-        <Doughnut data={pieData} options={options} />
+        <Doughnut data={pieData} options={options} ref={chartRef} />
       </div>
       <CustomLegend/>
       <CustomTooltip />
