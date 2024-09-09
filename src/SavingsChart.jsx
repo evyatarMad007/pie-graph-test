@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
@@ -10,31 +10,62 @@ const formatNumberWithCommas = (number) =>
 const SavingsChart = ({ data, title }) => {
   const DonutHeight = 390;
   const DonutWidth = 300;
-  const [hoveredIndex, setHoveredIndex] = useState(0);
-  const [hoveredIndexForTooltip, setHoveredIndexForTooltip] = useState(0);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [hoveredIndexForTooltip, setHoveredIndexForTooltip] = useState(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, xInner: 0, y: 0, yInner: 0 });
   const countData = data.reduce((acc, item) => acc + item.data, 0);
   const chartRef = useRef(null);
 
-  const pieData = {
+  // const pieData = {
+  //   labels: data.map((item) => item.label),
+  //   datasets: [
+  //     {
+  //       data: data.map((item) => item.data),
+  //       backgroundColor: data.map((item) => item.backgroundColor),
+  //       hoverBackgroundColor: data.map((item) => item.hoverBackgroundColor),
+  //       borderWidth: 4,
+  //       borderColor: "white",
+  //       hoverBorderColor: "white", 
+  //       hoverBorderWidth: 0, 
+  //       borderRadius: 7, 
+  //       hoverOffset: 18.5,
+  //       animation: {
+  //         duration: 20,
+  //       },
+  //     },
+  //   ],
+  // };
+
+
+
+  const [pieData, setPieData] = useState({
     labels: data.map((item) => item.label),
-    datasets: [
-      {
-        data: data.map((item) => item.data),
-        backgroundColor: data.map((item) => item.backgroundColor),
-        hoverBackgroundColor: data.map((item) => item.hoverBackgroundColor),
-        borderWidth: 4,
-        borderColor: "white",
-        hoverBorderColor: "white",
-        hoverBorderWidth: 0,
-        borderRadius: 7,
-        hoverOffset: 18.5,
-        animation: {
-          duration: 20,
-        },
+    datasets: [{
+      data: data.map((item) => item.data),
+      backgroundColor: data.map((item) => item.backgroundColor),
+      hoverBackgroundColor: data.map((item) => item.hoverBackgroundColor),
+      borderWidth: 4,
+      borderColor: "white",
+      hoverBorderColor: "white",
+      hoverBorderWidth: 0,
+      borderRadius: 7,
+      hoverOffset: 18.5,
+      offset: data.map(() => 18.5),
+      animation: {
+        duration: 20,
       },
-    ],
-  };
+    }]
+  });
+
+  useEffect(() => {
+    setPieData(prevData => ({
+      ...prevData,
+      datasets: [{
+        ...prevData.datasets[0],
+        offset: data.map((item, index) => hoveredIndex === index ? 18.5 : 0),
+      }]
+    }));
+  }, [hoveredIndex, data]);
 
   const options = {
     plugins: {
