@@ -43,8 +43,18 @@ const SavingsChart = ({ data, title }) => {
         enabled: false,
       },
     },
+    padding: 0,
     responsive: true,
     cutout: "78%",
+    maintainAspectRatio: true,
+    layout: {
+      padding: {
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 20
+      }
+    },
     onHover: (event, elements, chart) => {
       if (elements.length > 0) {
         const { index } = elements[0];
@@ -208,7 +218,7 @@ const SavingsChart = ({ data, title }) => {
         position: "relative",
         width: `${DonutWidth}px`,
         height: `${DonutHeight}px`,
-        padding: "0 0",
+        padding: "0",
       }}
     >
       {title && (
