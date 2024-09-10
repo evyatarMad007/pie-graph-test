@@ -272,9 +272,12 @@ const SavingsChart = ({ data, title }) => {
 
   }, [data, hoveredIndexForTooltip, tooltipPos, DonutWidth, DonutHeight]);
 
-  const resetHoveredIndex = useCallback(() => setHoveredIndexForTooltip(null), []);
-  const { ref, isHovered, props } = useLeaveOrOutsideClick(resetHoveredIndex);
-  useScrollListener(resetHoveredIndex);
+
+  const { ref, isHovered, props } = useLeaveOrOutsideClick(useCallback(() => {
+    setHoveredIndexForTooltip(null);
+    setHoveredIndex(null);
+  }, []));
+  useScrollListener(useCallback(() => setHoveredIndexForTooltip(null), []));
 
   return (
     <div
