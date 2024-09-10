@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useMemo, useCallback } from "react"
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import useLeaveOrOutsideClick from "./useLeaveOrOutsideClick";
+import useScrollListener from "./useScrollListener";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -271,10 +272,9 @@ const SavingsChart = ({ data, title }) => {
 
   }, [data, hoveredIndexForTooltip, tooltipPos, DonutWidth, DonutHeight]);
 
-  const { ref, isHovered, props } = useLeaveOrOutsideClick(useCallback(() => {
-    setHoveredIndex(null);
-    setHoveredIndexForTooltip(null);
-  }, []));
+  const resetHoveredIndex = useCallback(() => setHoveredIndexForTooltip(null), []);
+  const { ref, isHovered, props } = useLeaveOrOutsideClick(resetHoveredIndex);
+  useScrollListener(resetHoveredIndex);
 
   return (
     <div
