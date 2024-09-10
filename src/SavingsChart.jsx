@@ -181,16 +181,50 @@ const SavingsChart = ({ data, title }) => {
     const sharpCorner = "0px";
   
     const translatePosition = () => {
-      const tooltipWidth = document.getElementById(item.label)?.offsetWidth;
-      const horizontalOffset = tooltipWidth + 3;
+      const tooltipElement = document.getElementById(item.label);
+      const horizontalOffset = tooltipElement?.offsetWidth + 3;
+      const screenWidth = window.innerWidth;
+      // const verticalOffset = tooltipElement?.offsetHeight + 3;
+      // const screenHeight = window.innerHeight;
+      
+      
 
-      const positions = {
+      const tooltipDeflectionDistanceNumber = () => {
+        const deflectionCalcObject = {
+          left: {
+            isDeflection: tooltipPos.xInner - horizontalOffset < 0,
+            deflectionNumber: tooltipPos.xInner - horizontalOffset < 0 ? Number((tooltipPos.xInner - horizontalOffset).toString().replace("-", "")) : 0, // -75 <-( )
+          },
+          right: {
+            isDeflection: (tooltipPos.xInner + horizontalOffset + 37 - screenWidth) > 0,
+            deflectionNumber: (tooltipPos.xInner + horizontalOffset + 37 - screenWidth) > 0 ? Number((tooltipPos.xInner + horizontalOffset + 37 - screenWidth).toString()) : 0, // ( ) -> 384
+          }
+        }
+
+        return {
+          x: {
+            isDeflection: isLeft ? deflectionCalcObject.left.isDeflection : deflectionCalcObject.right.isDeflection,
+            deflectionNumber: isLeft ? deflectionCalcObject.left.deflectionNumber : deflectionCalcObject.right.deflectionNumber,
+          },
+        }
+      }
+
+      const positionsDesktop = {
         yWhenTop: -60,
         yWhenBottom: 15,
         xWhenLeft: -horizontalOffset,
         xWhenRight: 15,
       };
 
+      const positionsMobile = {
+        yWhenTop: -60,
+        yWhenBottom: 15,
+        xWhenLeft: -horizontalOffset + tooltipDeflectionDistanceNumber().x.deflectionNumber,
+        xWhenRight: 15 - tooltipDeflectionDistanceNumber().x.deflectionNumber,
+      };
+
+      const positions = screenWidth > 768 ? positionsDesktop : positionsMobile;
+      
       return {
         x: isLeft ? positions.xWhenLeft : positions.xWhenRight,
         y: isTop ? positions.yWhenTop : positions.yWhenBottom,
