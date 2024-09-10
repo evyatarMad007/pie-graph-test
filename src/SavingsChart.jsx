@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import useLeaveOrOutsideClick from "./useLeaveOrOutsideClick";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -14,7 +15,6 @@ const SavingsChart = ({ data, title }) => {
   const [hoveredIndexForTooltip, setHoveredIndexForTooltip] = useState(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, xInner: 0, y: 0, yInner: 0 });
   const chartRef = useRef(null);
-
   const countData = useMemo(() => data.reduce((acc, item) => acc + item.data, 0), [data]);
 
   const pieData = useMemo(() => ({
@@ -271,8 +271,15 @@ const SavingsChart = ({ data, title }) => {
 
   }, [data, hoveredIndexForTooltip, tooltipPos, DonutWidth, DonutHeight]);
 
+  const { ref, isHovered, props } = useLeaveOrOutsideClick(useCallback(() => {
+    setHoveredIndex(null);
+    setHoveredIndexForTooltip(null);
+  }, []));
+
   return (
     <div
+      ref={ref}
+      {...props}
       style={{
         background: "white",
         boxSizing: "border-box",
