@@ -69,7 +69,7 @@ function App() {
   ]
 
   return (
-      <div>
+      <div style={{padding: '50px'}}>
         <SavingsChart data={chartPieData} title={"?כמה חסכתי עד היום"}/>
       </div>
   )

@@ -9,11 +9,19 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const formatNumberWithCommas = (number) =>
   number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
+const findIndexOfMaxData = (array) => {
+  if (array.length === 0) return -1;
+
+  return array.reduce((maxIndex, currentItem, currentIndex, arr) => 
+    currentItem.data > arr[maxIndex].data ? currentIndex : maxIndex
+  , 0);
+};
+
 const SavingsChart = ({ data, title }) => {
   const DonutHeight = 390;
   const DonutWidth = 300;
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [hoveredIndexForTooltip, setHoveredIndexForTooltip] = useState(null);
+  const [hoveredIndex, setHoveredIndex] = useState(findIndexOfMaxData(data));
+  const [hoveredIndexForTooltip, setHoveredIndexForTooltip] = useState(findIndexOfMaxData(data));
   const [tooltipPos, setTooltipPos] = useState({ x: 0, xInner: 0, y: 0, yInner: 0 });
   const chartRef = useRef(null);
   const countData = useMemo(() => data.reduce((acc, item) => acc + item.data, 0), [data]);
@@ -306,12 +314,14 @@ const SavingsChart = ({ data, title }) => {
 
   }, [data, hoveredIndexForTooltip, tooltipPos, DonutWidth, DonutHeight]);
 
-
   const { ref, isHovered, props } = useLeaveOrOutsideClick(useCallback(() => {
     setHoveredIndexForTooltip(null);
     setHoveredIndex(null);
   }, []));
-  useScrollListener(useCallback(() => setHoveredIndexForTooltip(null), []));
+
+  useScrollListener(useCallback(() => 
+    setHoveredIndexForTooltip(null)
+  , []));
 
   return (
     <div
