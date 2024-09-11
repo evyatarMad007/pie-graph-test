@@ -2,7 +2,8 @@ import React from 'react'
 import SavingsChart from './SavingsChart.jsx'
 
 function App() {
-  const chartPieData = [
+
+  const chartPieDataFinance = [
     {
       label: 'קרן פנסיה',
       data: 318695,
@@ -68,9 +69,42 @@ function App() {
     },
   ]
 
+
+  const chartPieDataInsurance = [
+    {
+      label: 'בריאות',
+      data: 150,
+      backgroundColor: '#33b242',
+      hoverBackgroundColor: '#33b242',
+      tooltipColor: '#d7f4db',
+    },
+    {
+      label: 'רכב',
+      data: 550,
+      backgroundColor: '#003c7f',
+      hoverBackgroundColor: '#003c7f',
+      tooltipColor: '#c7e1ff',
+    },
+    {
+      label: 'דירה',
+      data: 400,
+      backgroundColor: '#c7e1ff',
+      hoverBackgroundColor: '#c7e1ff',
+      tooltipColor: '#e2ecf9',
+    },
+    {
+      label: 'חיים',
+      data: 300,
+      backgroundColor: '#f9ba20',
+      hoverBackgroundColor: '#f9ba20',
+      tooltipColor: '#fef0cd',
+    }
+  ]
+
   return (
-      <div style={{padding: '50px'}}>
-        <SavingsChart data={chartPieData} title={"?כמה חסכתי עד היום"}/>
+      <div style={{padding: '50px', display: 'flex', gap: '150px'}}>
+        <SavingsChart data={chartPieDataInsurance} title={"?כמה חסכתי עד היום"} config={{legend: {showData: true, symbol: "₪"}}}/>
+        <SavingsChart data={chartPieDataFinance} title={"?כמה חסכתי עד היום"} />
       </div>
   )
 }

@@ -17,7 +17,7 @@ const findIndexOfMaxData = (array) => {
   , 0);
 };
 
-const SavingsChart = ({ data, title }) => {
+const SavingsChart = ({ data, title, config }) => {
   const DonutHeight = 390;
   const DonutWidth = 300;
   const [hoveredIndex, setHoveredIndex] = useState(findIndexOfMaxData(data));
@@ -125,8 +125,11 @@ const SavingsChart = ({ data, title }) => {
     setHoveredIndexForTooltip(null);
   }, []);
 
-  const CustomLegend = useCallback(() => (
-    <div
+  const renderLegend = () => {
+    const isShowData = config?.legend?.showData;
+
+    const renderBaseLegend = () => {
+      return <div
       style={{
         display: "flex",
         alignItems: "center",
@@ -137,8 +140,8 @@ const SavingsChart = ({ data, title }) => {
         marginTop: "20px",
       }}
     >
-      {data.map((item, index) => (
-        <div
+      {
+        data.map((item, index) => (<div
           key={index}
           style={{
             display: "flex",
@@ -173,9 +176,92 @@ const SavingsChart = ({ data, title }) => {
           >
             {item.label}
           </span>
-        </div>
-      ))}
+        </div>))
+      }
     </div>
+    
+    };
+
+    const renderLegendWithData = () => {
+      const symbol = config?.legend?.symbol;
+      return <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "row-reverse",
+        flexWrap: "wrap",
+        gap: "12px",
+        marginTop: "20px",
+      }}
+    >
+      {
+        data.map((item, index) => (   <div
+          key={index}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "row-reverse",
+            gap: "7px",
+            fontWeight: hoveredIndex === index ? "bolder" : "normal",
+            transition: "font-weight 1s ease",
+            cursor: "pointer",
+            margin: '0 0 7px 0',
+          }}
+          onMouseEnter={() => handleLegendHover(index)}
+          onMouseLeave={handleLegendLeave}
+        >
+          <div
+            style={{
+              width: "4.5px",
+              borderRadius: hoveredIndex === index ? "1.3px" : "5px",
+              height: "36px",
+              transform: hoveredIndex === index ? "scale(1,1.1)" : "scale(1,1)",
+              backgroundColor: item.backgroundColor,
+              marginRight: "5px",
+            }}
+          />
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'flex-end',
+          }}>
+          <span
+            style={{
+              fontSize: "15.5px",
+              lineHeight: "22px",
+              fontFamily: "mfw_protocolharel, Arial, Helvetica, sans-serif",
+              color: "#003C7F",
+            }}
+          >
+            {item.label}
+          </span>
+          <span
+            style={{
+              fontSize: "16px",
+              fontWeight: "bolder",
+              lineHeight: "21px",
+              fontFamily: "mfw_protocolharel, Arial, Helvetica, sans-serif",
+              color: "#003C7F",
+              gap: '1px',
+              display: 'flex',
+            }}
+          >
+            {symbol && <span>{symbol}</span>}
+            <span>{item.data}</span>
+          </span>
+          </div>
+        </div>))
+      }
+    </div>
+    };
+
+    return isShowData ? renderLegendWithData() : renderBaseLegend();
+  };
+
+  const CustomLegend = useCallback(() => (
+    renderLegend()
   ), [data, hoveredIndex, handleLegendHover, handleLegendLeave]);
 
   const CustomTooltip = useCallback(() => {
