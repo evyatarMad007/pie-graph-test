@@ -136,8 +136,9 @@ const SavingsChart = ({ data, title, config }) => {
         justifyContent: "center",
         flexDirection: "row-reverse",
         flexWrap: "wrap",
-        gap: "12px",
-        marginTop: "20px",
+        gap: "15px",
+        rowGap: "10px",
+        padding: "5px 0 0 0",
       }}
     >
       {
@@ -196,7 +197,7 @@ const SavingsChart = ({ data, title, config }) => {
       }}
     >
       {
-        data.map((item, index) => (   <div
+        data.map((item, index) => (<div
           key={index}
           style={{
             display: "flex",
@@ -206,7 +207,7 @@ const SavingsChart = ({ data, title, config }) => {
             fontWeight: hoveredIndex === index ? "bolder" : "normal",
             transition: "font-weight 1s ease",
             cursor: "pointer",
-            margin: '0 0 7px 0',
+            margin: '0 20px 7px 19px',
           }}
           onMouseEnter={() => handleLegendHover(index)}
           onMouseLeave={handleLegendLeave}
